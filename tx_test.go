@@ -10,9 +10,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/roasbeef/btcd/wire"
-	"github.com/roasbeef/btcutil"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
+	"github.com/roasbeef/btcutil"
 )
 
 // TestTx tests the API for Tx.
@@ -36,14 +36,14 @@ func TestTx(t *testing.T) {
 
 	// Hash for block 100,000 transaction 0.
 	wantShaStr := "8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87"
-	wantSha, err := wire.NewShaHashFromStr(wantShaStr)
+	wantSha, err := chainhash.NewHashFromStr(wantShaStr)
 	if err != nil {
 		t.Errorf("NewShaHashFromStr: %v", err)
 	}
 
 	// Request the sha multiple times to test generation and caching.
 	for i := 0; i < 2; i++ {
-		sha := tx.Sha()
+		sha := tx.Hash()
 		if !sha.IsEqual(wantSha) {
 			t.Errorf("Sha #%d mismatched sha - got %v, want %v", i,
 				sha, wantSha)

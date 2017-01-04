@@ -12,10 +12,10 @@ interface. The functions are only exported while the tests are being run.
 package btcutil
 
 import (
-	"github.com/roasbeef/btcd/btcec"
-	"github.com/roasbeef/btcd/wire"
-	"github.com/roasbeef/btcutil/base58"
 	"github.com/btcsuite/golangcrypto/ripemd160"
+	"github.com/roasbeef/btcd/btcec"
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
+	"github.com/roasbeef/btcutil/base58"
 )
 
 // SetBlockBytes sets the internal serialized block byte buffer to the passed
@@ -53,7 +53,7 @@ func TstAddressScriptHash(hash [ripemd160.Size]byte,
 	}
 }
 
-func TstAddressWitnessScriptHash(hash [wire.HashSize]byte,
+func TstAddressWitnessScriptHash(hash [chainhash.HashSize]byte,
 	netID byte) *AddressWitnessScriptHash {
 
 	return &AddressWitnessScriptHash{

@@ -23,7 +23,7 @@ const TxIndexUnknown = -1
 // the relatively expensive hashing operations.
 type Tx struct {
 	msgTx   *wire.MsgTx     // Underlying MsgTx
-	txSha   *chainhash.Hash // Cached transaction hash
+	txHash  *chainhash.Hash // Cached transaction hash
 	txIndex int             // Position within a block or TxIndexUnknown
 }
 
@@ -33,18 +33,18 @@ func (t *Tx) MsgTx() *wire.MsgTx {
 	return t.msgTx
 }
 
-// Sha returns the hash of the transaction.  This is equivalent to
-// calling TxSha on the underlying wire.MsgTx, however it caches the
-// result so subsequent calls are more efficient.
-func (t *Tx) Sha() *chainhash.Hash {
+// Hash returns the hash of the transaction.  This is equivalent to calling
+// TxSha on the underlying wire.MsgTx, however it caches the result so
+// subsequent calls are more efficient.
+func (t *Tx) Hash() *chainhash.Hash {
 	// Return the cached hash if it has already been generated.
-	if t.txSha != nil {
-		return t.txSha
+	if t.txHash != nil {
+		return t.txHash
 	}
 
 	// Cache the hash and return it.
 	sha := t.msgTx.TxHash()
-	t.txSha = &sha
+	t.txHash = &sha
 	return &sha
 }
 

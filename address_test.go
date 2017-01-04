@@ -11,11 +11,12 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Roasbeef/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/golangcrypto/ripemd160"
 	"github.com/roasbeef/btcd/chaincfg"
 	"github.com/roasbeef/btcd/wire"
 	"github.com/roasbeef/btcutil"
 	"github.com/roasbeef/btcutil/base58"
-	"github.com/btcsuite/golangcrypto/ripemd160"
 )
 
 // invalidNet is an invalid bitcoin network.
@@ -533,7 +534,7 @@ func TestAddresses(t *testing.T) {
 			case *btcutil.AddressWitnessPubKeyHash:
 				saddr = base58.Decode(encoded)[3 : 3+ripemd160.Size]
 			case *btcutil.AddressWitnessScriptHash:
-				saddr = base58.Decode(encoded)[3 : 3+wire.HashSize]
+				saddr = base58.Decode(encoded)[3 : 3+chainhash.HashSize]
 			}
 
 			// Check script address, as well as the Hash160 method for P2PKH and
