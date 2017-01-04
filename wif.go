@@ -10,7 +10,7 @@ import (
 
 	"github.com/roasbeef/btcd/btcec"
 	"github.com/roasbeef/btcd/chaincfg"
-	"github.com/roasbeef/btcd/wire"
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcutil/base58"
 )
 
@@ -110,7 +110,7 @@ func DecodeWIF(wif string) (*WIF, error) {
 	} else {
 		tosum = decoded[:1+btcec.PrivKeyBytesLen]
 	}
-	cksum := wire.DoubleSha256(tosum)[:4]
+	cksum := chainhash.DoubleHashB(tosum)[:4]
 	if !bytes.Equal(cksum, decoded[decodedLen-4:]) {
 		return nil, ErrChecksumMismatch
 	}
@@ -142,7 +142,7 @@ func (w *WIF) String() string {
 	if w.CompressPubKey {
 		a = append(a, compressMagic)
 	}
-	cksum := wire.DoubleSha256(a)[:4]
+	cksum := chainhash.DoubleHashB(a)[:4]
 	a = append(a, cksum...)
 	return base58.Encode(a)
 }

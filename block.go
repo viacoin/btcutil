@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/wire"
 )
 
@@ -34,10 +35,10 @@ type Block struct {
 	msgBlock                 *wire.MsgBlock // Underlying MsgBlock
 	serializedBlock          []byte         // Serialized bytes for the block
 	serializedBlockNoWitness []byte
-	blockSha                 *wire.ShaHash // Cached block hash
-	blockHeight              int32         // Height in the main block chain
-	transactions             []*Tx         // Transactions
-	txnsGenerated            bool          // ALL wrapped transactions generated
+	blockSha                 *chainhash.Hash // Cached block hash
+	blockHeight              int32           // Height in the main block chain
+	transactions             []*Tx           // Transactions
+	txnsGenerated            bool            // ALL wrapped transactions generated
 }
 
 // MsgBlock returns the underlying wire.MsgBlock for the Block.
@@ -92,14 +93,14 @@ func (b *Block) BytesNoWitness() ([]byte, error) {
 // Sha returns the block identifier hash for the Block.  This is equivalent to
 // calling BlockSha on the underlying wire.MsgBlock, however it caches the
 // result so subsequent calls are more efficient.
-func (b *Block) Sha() *wire.ShaHash {
+func (b *Block) Sha() *chainhash.Hash {
 	// Return the cached block hash if it has already been generated.
 	if b.blockSha != nil {
 		return b.blockSha
 	}
 
 	// Cache the block hash and return it.
-	sha := b.msgBlock.BlockSha()
+	sha := b.msgBlock.BlockHash()
 	b.blockSha = &sha
 	return &sha
 }
@@ -172,7 +173,7 @@ func (b *Block) Transactions() []*Tx {
 // block is txNum 0.  This is equivalent to calling TxSha on the underlying
 // wire.MsgTx, however it caches the result so subsequent calls are more
 // efficient.
-func (b *Block) TxSha(txNum int) (*wire.ShaHash, error) {
+func (b *Block) TxSha(txNum int) (*chainhash.Hash, error) {
 	// Attempt to get a wrapped transaction for the specified index.  It
 	// will be created lazily if needed or simply return the cached version
 	// if it has already been generated.

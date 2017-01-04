@@ -9,12 +9,12 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/roasbeef/btcd/btcec"
-	"github.com/roasbeef/btcd/chaincfg"
-	"github.com/roasbeef/btcd/wire"
-	"github.com/roasbeef/btcutil/base58"
 	"github.com/btcsuite/fastsha256"
 	"github.com/btcsuite/golangcrypto/ripemd160"
+	"github.com/roasbeef/btcd/btcec"
+	"github.com/roasbeef/btcd/chaincfg"
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
+	"github.com/roasbeef/btcutil/base58"
 )
 
 var (
@@ -488,7 +488,7 @@ func (a *AddressWitnessPubKeyHash) Hash160() *[ripemd160.Size]byte {
 // AddressWitnessScriptHash is an address for a pay-to-witness-script-hash
 // (P2WSH) output.
 type AddressWitnessScriptHash struct {
-	scriptHash     [wire.HashSize]byte
+	scriptHash     [chainhash.HashSize]byte
 	netID          byte
 	witnessVersion byte
 }
@@ -522,7 +522,7 @@ func newAddressWitnessScriptHashFromHash(scriptHash []byte,
 	netID byte) (*AddressWitnessScriptHash, error) {
 
 	// Check for a valid script hash length.
-	if len(scriptHash) != wire.HashSize {
+	if len(scriptHash) != chainhash.HashSize {
 		return nil, errors.New("scriptHash must be 32 bytes")
 	}
 

@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"io"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/wire"
 )
 
@@ -21,9 +22,9 @@ const TxIndexUnknown = -1
 // transaction on its first access so subsequent accesses don't have to repeat
 // the relatively expensive hashing operations.
 type Tx struct {
-	msgTx   *wire.MsgTx   // Underlying MsgTx
-	txSha   *wire.ShaHash // Cached transaction hash
-	txIndex int           // Position within a block or TxIndexUnknown
+	msgTx   *wire.MsgTx     // Underlying MsgTx
+	txSha   *chainhash.Hash // Cached transaction hash
+	txIndex int             // Position within a block or TxIndexUnknown
 }
 
 // MsgTx returns the underlying wire.MsgTx for the transaction.
@@ -35,14 +36,14 @@ func (t *Tx) MsgTx() *wire.MsgTx {
 // Sha returns the hash of the transaction.  This is equivalent to
 // calling TxSha on the underlying wire.MsgTx, however it caches the
 // result so subsequent calls are more efficient.
-func (t *Tx) Sha() *wire.ShaHash {
+func (t *Tx) Sha() *chainhash.Hash {
 	// Return the cached hash if it has already been generated.
 	if t.txSha != nil {
 		return t.txSha
 	}
 
 	// Cache the hash and return it.
-	sha := t.msgTx.TxSha()
+	sha := t.msgTx.TxHash()
 	t.txSha = &sha
 	return &sha
 }
