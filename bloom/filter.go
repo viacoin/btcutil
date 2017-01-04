@@ -9,6 +9,7 @@ import (
 	"math"
 	"sync"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/txscript"
 	"github.com/roasbeef/btcd/wire"
 	"github.com/roasbeef/btcutil"
@@ -166,9 +167,9 @@ func (bf *Filter) Matches(data []byte) bool {
 // This function MUST be called with the filter lock held.
 func (bf *Filter) matchesOutPoint(outpoint *wire.OutPoint) bool {
 	// Serialize
-	var buf [wire.HashSize + 4]byte
-	copy(buf[:], outpoint.Hash.Bytes())
-	binary.LittleEndian.PutUint32(buf[wire.HashSize:], outpoint.Index)
+	var buf [chainhash.HashSize + 4]byte
+	copy(buf[:], outpoint.Hash[:])
+	binary.LittleEndian.PutUint32(buf[chainhash.HashSize:], outpoint.Index)
 
 	return bf.matches(buf[:])
 }
@@ -214,12 +215,12 @@ func (bf *Filter) Add(data []byte) {
 	bf.mtx.Unlock()
 }
 
-// AddShaHash adds the passed wire.ShaHash to the Filter.
+// AddHash adds the passed chainhash.Hash to the Filter.
 //
 // This function is safe for concurrent access.
-func (bf *Filter) AddShaHash(sha *wire.ShaHash) {
+func (bf *Filter) AddHash(sha *chainhash.Hash) {
 	bf.mtx.Lock()
-	bf.add(sha.Bytes())
+	bf.add(sha[:])
 	bf.mtx.Unlock()
 }
 
@@ -228,9 +229,9 @@ func (bf *Filter) AddShaHash(sha *wire.ShaHash) {
 // This function MUST be called with the filter lock held.
 func (bf *Filter) addOutPoint(outpoint *wire.OutPoint) {
 	// Serialize
-	var buf [wire.HashSize + 4]byte
-	copy(buf[:], outpoint.Hash.Bytes())
-	binary.LittleEndian.PutUint32(buf[wire.HashSize:], outpoint.Index)
+	var buf [chainhash.HashSize + 4]byte
+	copy(buf[:], outpoint.Hash[:])
+	binary.LittleEndian.PutUint32(buf[chainhash.HashSize:], outpoint.Index)
 
 	bf.add(buf[:])
 }
@@ -249,7 +250,7 @@ func (bf *Filter) AddOutPoint(outpoint *wire.OutPoint) {
 // script.
 //
 // This function MUST be called with the filter lock held.
-func (bf *Filter) maybeAddOutpoint(pkScript []byte, outHash *wire.ShaHash, outIdx uint32) {
+func (bf *Filter) maybeAddOutpoint(pkScript []byte, outHash *chainhash.Hash, outIdx uint32) {
 	switch bf.msgFilterLoad.Flags {
 	case wire.BloomUpdateAll:
 		outpoint := wire.NewOutPoint(outHash, outIdx)
@@ -272,7 +273,7 @@ func (bf *Filter) maybeAddOutpoint(pkScript []byte, outHash *wire.ShaHash, outId
 func (bf *Filter) matchTxAndUpdate(tx *btcutil.Tx) bool {
 	// Check if the filter matches the hash of the transaction.
 	// This is useful for finding transactions when they appear in a block.
-	matched := bf.matches(tx.Sha().Bytes())
+	matched := bf.matches(tx.Hash()[:])
 
 	// Check if the filter matches any data elements in the public key
 	// scripts of any of the outputs.  When it does, add the outpoint that
@@ -294,7 +295,7 @@ func (bf *Filter) matchTxAndUpdate(tx *btcutil.Tx) bool {
 			}
 
 			matched = true
-			bf.maybeAddOutpoint(txOut.PkScript, tx.Sha(), uint32(i))
+			bf.maybeAddOutpoint(txOut.PkScript, tx.Hash(), uint32(i))
 			break
 		}
 	}

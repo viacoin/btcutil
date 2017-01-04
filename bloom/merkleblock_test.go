@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"testing"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/wire"
 	"github.com/roasbeef/btcutil"
 	"github.com/roasbeef/btcutil/bloom"
@@ -37,13 +38,13 @@ func TestMerkleBlock3(t *testing.T) {
 	f := bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 
 	inputStr := "63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5"
-	sha, err := wire.NewShaHashFromStr(inputStr)
+	sha, err := chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestMerkleBlock3 NewShaHashFromStr failed: %v", err)
 		return
 	}
 
-	f.AddShaHash(sha)
+	f.AddHash(sha)
 
 	mBlock, _ := bloom.NewMerkleBlock(blk, f)
 
@@ -59,7 +60,7 @@ func TestMerkleBlock3(t *testing.T) {
 	}
 
 	got := bytes.NewBuffer(nil)
-	err = mBlock.BtcEncode(got, wire.ProtocolVersion)
+	err = mBlock.BtcEncode(got, wire.ProtocolVersion, wire.BaseEncoding)
 	if err != nil {
 		t.Errorf("TestMerkleBlock3 BtcEncode failed: %v", err)
 		return

@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"testing"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/wire"
 	"github.com/roasbeef/btcutil"
 	"github.com/roasbeef/btcutil/bloom"
@@ -82,7 +83,7 @@ func TestFilterInsert(t *testing.T) {
 	}
 
 	got := bytes.NewBuffer(nil)
-	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion)
+	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion, wire.BaseEncoding)
 	if err != nil {
 		t.Errorf("TestFilterInsert BtcDecode failed: %v\n", err)
 		return
@@ -126,7 +127,7 @@ func TestFilterFPRange(t *testing.T) {
 
 	for _, test := range tests {
 		// Convert test input to appropriate types.
-		hash, err := wire.NewShaHashFromStr(test.hash)
+		hash, err := chainhash.NewHashFromStr(test.hash)
 		if err != nil {
 			t.Errorf("NewShaHashFromStr unexpected error: %v", err)
 			continue
@@ -140,9 +141,9 @@ func TestFilterFPRange(t *testing.T) {
 		// Add the test hash to the bloom filter and ensure the
 		// filter serializes to the expected bytes.
 		f := test.filter
-		f.AddShaHash(hash)
+		f.AddHash(hash)
 		got := bytes.NewBuffer(nil)
-		err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion)
+		err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion, wire.BaseEncoding)
 		if err != nil {
 			t.Errorf("BtcDecode unexpected error: %v\n", err)
 			continue
@@ -195,7 +196,7 @@ func TestFilterInsertWithTweak(t *testing.T) {
 		return
 	}
 	got := bytes.NewBuffer(nil)
-	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion)
+	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion, wire.BaseEncoding)
 	if err != nil {
 		t.Errorf("TestFilterInsertWithTweak BtcDecode failed: %v\n", err)
 		return
@@ -229,7 +230,7 @@ func TestFilterInsertKey(t *testing.T) {
 		return
 	}
 	got := bytes.NewBuffer(nil)
-	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion)
+	err = f.MsgFilterLoad().BtcEncode(got, wire.ProtocolVersion, wire.BaseEncoding)
 	if err != nil {
 		t.Errorf("TestFilterInsertWithTweak BtcDecode failed: %v\n", err)
 		return
@@ -300,12 +301,12 @@ func TestFilterBloomMatch(t *testing.T) {
 
 	f := bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 	inputStr := "b4749f017444b051c44dfd2720e88f314ff94f3dd6d56d40ef65854fcd7fff6b"
-	sha, err := wire.NewShaHashFromStr(inputStr)
+	sha, err := chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterBloomMatch NewShaHashFromStr failed: %v\n", err)
 		return
 	}
-	f.AddShaHash(sha)
+	f.AddHash(sha)
 	if !f.MatchTxAndUpdate(tx) {
 		t.Errorf("TestFilterBloomMatch didn't match sha %s", inputStr)
 	}
@@ -379,7 +380,7 @@ func TestFilterBloomMatch(t *testing.T) {
 
 	f = bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 	inputStr = "90c122d70786e899529d71dbeba91ba216982fb6ba58f3bdaab65e73b7e9260b"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterBloomMatch NewShaHashFromStr failed: %v\n", err)
 		return
@@ -392,12 +393,12 @@ func TestFilterBloomMatch(t *testing.T) {
 
 	f = bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 	inputStr = "00000009e784f32f62ef849763d4f45b98e07ba658647343b915ff832b110436"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterBloomMatch NewShaHashFromStr failed: %v\n", err)
 		return
 	}
-	f.AddShaHash(sha)
+	f.AddHash(sha)
 	if f.MatchTxAndUpdate(tx) {
 		t.Errorf("TestFilterBloomMatch matched sha %s", inputStr)
 	}
@@ -416,7 +417,7 @@ func TestFilterBloomMatch(t *testing.T) {
 
 	f = bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 	inputStr = "90c122d70786e899529d71dbeba91ba216982fb6ba58f3bdaab65e73b7e9260b"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterBloomMatch NewShaHashFromStr failed: %v\n", err)
 		return
@@ -429,7 +430,7 @@ func TestFilterBloomMatch(t *testing.T) {
 
 	f = bloom.NewFilter(10, 0, 0.000001, wire.BloomUpdateAll)
 	inputStr = "000000d70786e899529d71dbeba91ba216982fb6ba58f3bdaab65e73b7e9260b"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterBloomMatch NewShaHashFromStr failed: %v\n", err)
 		return
@@ -465,7 +466,7 @@ func TestFilterInsertUpdateNone(t *testing.T) {
 	f.Add(inputBytes)
 
 	inputStr = "147caa76786596590baa4e98f5d9f48b86c7765e489f7a6ff3360fe5c674360b"
-	sha, err := wire.NewShaHashFromStr(inputStr)
+	sha, err := chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterInsertUpdateNone NewShaHashFromStr failed: %v", err)
 		return
@@ -478,7 +479,7 @@ func TestFilterInsertUpdateNone(t *testing.T) {
 	}
 
 	inputStr = "02981fa052f0481dbc5868f4fc2166035a10f27a03cfd2de67326471df5bc041"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestFilterInsertUpdateNone NewShaHashFromStr failed: %v", err)
 		return
@@ -617,7 +618,7 @@ func TestFilterInsertP2PubKeyOnly(t *testing.T) {
 
 	// We should match the generation pubkey
 	inputStr = "147caa76786596590baa4e98f5d9f48b86c7765e489f7a6ff3360fe5c674360b"
-	sha, err := wire.NewShaHashFromStr(inputStr)
+	sha, err := chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestMerkleBlockP2PubKeyOnly NewShaHashFromStr failed: %v", err)
 		return
@@ -631,7 +632,7 @@ func TestFilterInsertP2PubKeyOnly(t *testing.T) {
 
 	// We should not match the 4th transaction, which is not p2pk
 	inputStr = "02981fa052f0481dbc5868f4fc2166035a10f27a03cfd2de67326471df5bc041"
-	sha, err = wire.NewShaHashFromStr(inputStr)
+	sha, err = chainhash.NewHashFromStr(inputStr)
 	if err != nil {
 		t.Errorf("TestMerkleBlockP2PubKeyOnly NewShaHashFromStr failed: %v", err)
 		return

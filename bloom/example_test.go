@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/roasbeef/btcd/chaincfg/chainhash"
 	"github.com/roasbeef/btcd/wire"
 	"github.com/roasbeef/btcutil/bloom"
 )
@@ -28,15 +29,15 @@ func ExampleNewFilter() {
 	// trasaction is the first transaction in block 310,000 of the main
 	// bitcoin block chain.
 	txHashStr := "fd611c56ca0d378cdcd16244b45c2ba9588da3adac367c4ef43e808b280b8a45"
-	txHash, err := wire.NewShaHashFromStr(txHashStr)
+	txHash, err := chainhash.NewHashFromStr(txHashStr)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	filter.AddShaHash(txHash)
+	filter.AddHash(txHash)
 
 	// Show that the filter matches.
-	matches := filter.Matches(txHash.Bytes())
+	matches := filter.Matches(txHash[:])
 	fmt.Println("Filter Matches?:", matches)
 
 	// Output:
