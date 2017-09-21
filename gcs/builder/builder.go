@@ -9,10 +9,10 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 
-	"github.com/roasbeef/btcd/chaincfg/chainhash"
-	"github.com/roasbeef/btcd/txscript"
-	"github.com/roasbeef/btcd/wire"
-	"github.com/roasbeef/btcutil/gcs"
+	"github.com/viacoin/viad/chaincfg/chainhash"
+	"github.com/viacoin/viad/txscript"
+	"github.com/viacoin/viad/wire"
+	"github.com/viacoin/viautil/gcs"
 )
 
 // DefaultP is the default collision probability (2^-20)

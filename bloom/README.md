@@ -1,19 +1,11 @@
 bloom
 =====
 
-<<<<<<< HEAD
-[![Build Status](http://img.shields.io/travis/btcsuite/btcutil.svg)](https://travis-ci.org/btcsuite/btcutil)
+[![Build Status](http://img.shields.io/travis/viacoin/viautil.svg)](https://travis-ci.org/viacoin/viautil) 
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
-[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/btcsuite/btcutil/bloom)
-=======
-[![Build Status](http://img.shields.io/travis/roasbeef/btcutil.svg)]
-(https://travis-ci.org/roasbeef/btcutil) [![ISC License]
-(http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
-[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)]
-(http://godoc.org/github.com/roasbeef/btcutil/bloom)
->>>>>>> a259eaf... multi: switch imports back to roasbeef
+[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/viacoin/viautil/bloom)
 
-Package bloom provides an API for dealing with bitcoin-specific bloom filters.
+Package bloom provides an API for dealing with viacoin-specific bloom filters.
 
 A comprehensive suite of tests is provided to ensure proper functionality.  See
 `test_coverage.txt` for the gocov coverage report.  Alternatively, if you are
@@ -23,14 +15,13 @@ report.
 ## Installation and Updating
 
 ```bash
-$ go get -u github.com/roasbeef/btcutil/bloom
+$ go get -u github.com/viacoin/viautil/bloom
 ```
 
 ## Examples
 
-=======
 * [NewFilter Example]
-  (http://godoc.org/github.com/roasbeef/btcutil/bloom#example-NewFilter)  
+  (http://godoc.org/github.com/viacoin/viautil/bloom#example-NewFilter)  
   Demonstrates how to create a new bloom filter, add a transaction hash to it,
   and check if the filter matches the transaction.
 
