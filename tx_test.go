@@ -10,9 +10,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/viacoin/viad/chaincfg/chainhash"
 	"github.com/viacoin/viautil"
-	"github.com/davecgh/go-spew/spew"
 )
 
 // TestTx tests the API for Tx.

@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/viacoin/viad/chaincfg/chainhash"
 	"github.com/viacoin/viad/wire"
 	"github.com/viacoin/viautil"
-	"github.com/davecgh/go-spew/spew"
 )
 
 // TestBlock tests the API for Block.
